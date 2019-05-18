@@ -1,36 +1,47 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 
-class App extends PureComponent {
-  componentDidMount = () => {
-    this.context = new AudioContext();
+import FrequencyGraph from './components/FrequencyGraph'
+
+class App extends Component {
+  constructor(...args){
+    super(...args)
+    this.audioContext = new AudioContext()
+    this.state = {
+      working: false,
+      audioBuffer: null,
+    }
   }
 
   render = () => (
     <div className="App">
-      <input type="file" id="input" onChange={this.openFile}/>
-      <button onClick={this.play}>Проиграй это</button>
+      <input type="file" id="input" accept="audio/*" onChange={this.openFile}/>
+      <button onClick={this.play} disabled={this.state.working || !this.source}>Play</button>
+      <FrequencyGraph buffer={this.state.audioBuffer}></FrequencyGraph>
     </div>
   );
 
   openFile = (e) => {
+    this.setState({working: true})
     const reader = new FileReader()
     reader.onload = async (e) => {
-      this.source = this.context.createBufferSource()
-      this.source.buffer = await this.context.decodeAudioData(e.target.result)
-      this.source.connect(this.context.destination)
-      console.log('done')
+      const buffer = await this.audioContext.decodeAudioData(e.target.result)
+      this.source = this.audioContext.createBufferSource()
+      this.source.buffer = buffer
+      this.source.connect(this.audioContext.destination)
+      this.setState({working: false, audioBuffer: buffer })
     }
     reader.readAsArrayBuffer(e.target.files[0])
   }
 
   play = async () => {
-    console.log(this.context.state)
-    if (this.context.state === 'suspended') {
-      await this.context.resume()
+    console.log(this.audioContext.state)
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume()
+      console.log('resumed')
     }
     this.source.start(0)
-    console.log('done')
+    console.log('started')
   }
 }
 
