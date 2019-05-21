@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import FrequencyGraph from './components/FrequencyGraph'
+import LiveFrequencyGraph from './components/LiveFrequencyGraph'
 
 class App extends Component {
   constructor(...args){
@@ -17,7 +18,8 @@ class App extends Component {
     <div className="App">
       <input type="file" id="input" accept="audio/*" onChange={this.openFile}/>
       <button onClick={this.play} disabled={this.state.working || !this.source}>Play</button>
-      <FrequencyGraph buffer={this.state.audioBuffer}></FrequencyGraph>
+      {/*<FrequencyGraph buffer={this.state.audioBuffer}></FrequencyGraph>*/}
+      <LiveFrequencyGraph audioContext={this.audioContext} fromNode={this.source}></LiveFrequencyGraph>
     </div>
   );
 

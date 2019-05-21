@@ -9,8 +9,8 @@ export default class FrequencyGraph extends PureComponent {
     }
   }
   async componentDidMount () {
-    this.canvas.width = 1000;
-    this.canvas.height = 512;
+    this.canvas.width = 4000;
+    this.canvas.height = 2048;
     this.ctx = this.canvas.getContext('2d');
   }
   async componentDidUpdate () {
@@ -28,7 +28,7 @@ export default class FrequencyGraph extends PureComponent {
 
       const suspendTimes = Array.from({length: this.canvas.width}, (value, index) => this.props.buffer.duration / this.canvas.width * index)
       const frequencySlicesByTimePromises = suspendTimes
-          .map(async (time, x) => {
+          .map(async time => {
             await audioCtx.suspend(time)
             const frequencyData = new Uint8Array(analyzerNode.frequencyBinCount);
             analyzerNode.getByteFrequencyData(frequencyData)
