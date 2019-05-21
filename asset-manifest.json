@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/1valdis/webaudio-experiments/static/css/main.ba49ec77.chunk.css",
-    "main.js": "/1valdis/webaudio-experiments/static/js/main.b2299409.chunk.js",
-    "main.js.map": "/1valdis/webaudio-experiments/static/js/main.b2299409.chunk.js.map",
-    "runtime~main.js": "/1valdis/webaudio-experiments/static/js/runtime~main.9e56d70e.js",
-    "runtime~main.js.map": "/1valdis/webaudio-experiments/static/js/runtime~main.9e56d70e.js.map",
-    "static/js/2.4a3d3c6d.chunk.js": "/1valdis/webaudio-experiments/static/js/2.4a3d3c6d.chunk.js",
-    "static/js/2.4a3d3c6d.chunk.js.map": "/1valdis/webaudio-experiments/static/js/2.4a3d3c6d.chunk.js.map",
-    "index.html": "/1valdis/webaudio-experiments/index.html",
-    "precache-manifest.089f52c6a38e745d3fcdd62425591d99.js": "/1valdis/webaudio-experiments/precache-manifest.089f52c6a38e745d3fcdd62425591d99.js",
-    "service-worker.js": "/1valdis/webaudio-experiments/service-worker.js",
-    "static/css/main.ba49ec77.chunk.css.map": "/1valdis/webaudio-experiments/static/css/main.ba49ec77.chunk.css.map"
+    "main.css": "/webaudio-experiments/static/css/main.ba49ec77.chunk.css",
+    "main.js": "/webaudio-experiments/static/js/main.b2299409.chunk.js",
+    "main.js.map": "/webaudio-experiments/static/js/main.b2299409.chunk.js.map",
+    "runtime~main.js": "/webaudio-experiments/static/js/runtime~main.1588b6a6.js",
+    "runtime~main.js.map": "/webaudio-experiments/static/js/runtime~main.1588b6a6.js.map",
+    "static/js/2.4a3d3c6d.chunk.js": "/webaudio-experiments/static/js/2.4a3d3c6d.chunk.js",
+    "static/js/2.4a3d3c6d.chunk.js.map": "/webaudio-experiments/static/js/2.4a3d3c6d.chunk.js.map",
+    "index.html": "/webaudio-experiments/index.html",
+    "precache-manifest.4ff84d7cd5b4beb770cb26507739a376.js": "/webaudio-experiments/precache-manifest.4ff84d7cd5b4beb770cb26507739a376.js",
+    "service-worker.js": "/webaudio-experiments/service-worker.js",
+    "static/css/main.ba49ec77.chunk.css.map": "/webaudio-experiments/static/css/main.ba49ec77.chunk.css.map"
   }
 }
