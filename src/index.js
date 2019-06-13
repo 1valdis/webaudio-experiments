@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 import App from './App'
 // import * as serviceWorker from './serviceWorker';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 // const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 render(
