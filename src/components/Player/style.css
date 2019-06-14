@@ -1,0 +1,8 @@
+.player {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template: "timeline timeline"     1fr
+        "playpause audioopener" 2rem
+        / 1fr      1fr;
+}
