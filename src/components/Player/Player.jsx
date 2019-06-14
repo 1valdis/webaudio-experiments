@@ -21,7 +21,7 @@ export default class Player extends PureComponent {
     return <div className='player'>
       <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={this.setTime} />
       <PlayPause isPlaying={this.state.isPlaying} onChange={this.state.isPlaying ? () => this.pause() : () => this.play()} disabled={!this.state.audioBuffer} />
-      <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => this.fileOpened(buffer)} />
+      <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => { this.fileOpened(buffer); this.play() }} />
     </div>
   }
   fileOpened (buffer) {
@@ -47,7 +47,7 @@ export default class Player extends PureComponent {
     this.sourceNode = this.audioContext.createBufferSource()
     this.sourceNode.connect(this.audioContext.destination)
     this.sourceNode.buffer = this.state.audioBuffer
-    this.sourceNode.start(0, this.audioContext.currentTime + time)
+    this.sourceNode.start(0, time)
     this.setState({
       isPlaying: true,
       startTime: this.audioContext.currentTime - time
