@@ -11,6 +11,7 @@ export default class Player extends PureComponent {
     this.state = {
       audioBuffer: null,
       currentTime: 0, // time in playing file (in seconds)
+      startTime: 0, // time of file start in audioContext's reference system
       isPlaying: false
     }
     this.audioContext = new window.AudioContext()
@@ -19,43 +20,46 @@ export default class Player extends PureComponent {
   render () {
     return <div className='player'>
       <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={this.setTime} />
-      <PlayPause isPlaying={this.state.isPlaying} onChange={this.state.isPlaying ? () => this.pause() : () => this.play()} />
-      <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => this.setAudioBuffer(buffer)} />
+      <PlayPause isPlaying={this.state.isPlaying} onChange={this.state.isPlaying ? () => this.pause() : () => this.play()} disabled={!this.state.audioBuffer} />
+      <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => this.fileOpened(buffer)} />
     </div>
   }
-  setAudioBuffer (buffer) {
-    if (this.sourceNode) {
-      this.sourceNode.stop()
-      this.sourceNode.disconnect()
-    }
-    this.sourceNode = this.audioContext.createBufferSource()
-    this.sourceNode.connect(this.audioContext.destination)
-    this.sourceNode.buffer = buffer
-    this.setState({
-      audioBuffer: buffer
+  fileOpened (buffer) {
+    this.setState(() => ({
+      audioBuffer: buffer,
+      currentTime: 0,
+      startTime: this.audioContext.currentTime
+    }), () => {
+      if (this.state.isPlaying) {
+        this.play()
+      }
     })
-    this.play()
   }
-  async play (time = 0) {
+  async play (time = this.state.currentTime) {
     if (!this.state.audioBuffer) return
     if (this.audioContext.state === 'suspended') {
       await this.audioContext.resume()
-      this.setState({
-        isPlaying: true
-      })
-      return
     }
+    if (this.sourceNode) {
+      this.sourceNode.disconnect()
+      this.sourceNode.stop()
+    }
+    this.sourceNode = this.audioContext.createBufferSource()
+    this.sourceNode.connect(this.audioContext.destination)
+    this.sourceNode.buffer = this.state.audioBuffer
     this.sourceNode.start(0, this.audioContext.currentTime + time)
     this.setState({
-      isPlaying: true
+      isPlaying: true,
+      startTime: this.audioContext.currentTime - time
     })
   }
   async pause () {
-    if (this.audioContext.state === 'running') {
-      await this.audioContext.suspend()
-    }
-    this.setState({
-      isPlaying: false
-    })
+    this.sourceNode.disconnect()
+    this.sourceNode.stop()
+    this.sourceNode = null
+    this.setState(state => ({
+      isPlaying: false,
+      currentTime: this.audioContext.currentTime - state.startTime
+    }))
   }
 }
