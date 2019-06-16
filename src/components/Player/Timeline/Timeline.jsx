@@ -6,16 +6,12 @@ export default class Timeline extends PureComponent {
   constructor(...args) {
     super(...args)
     this.state = {
-      secondsPerPixel: 0.1,
+      secondsPerPixel: 0.02,
     }
   }
   componentDidMount() {
     if (this.props.audioBuffer)
       this.renderCanvas()
-    document.body.addEventListener('resize', () => this.renderCanvas())
-  }
-  componentDidUpdate() {
-    // update current time position
   }
   async renderCanvas() {
     this.ctx.canvas.width = Math.ceil(this.props.audioBuffer ? this.props.audioBuffer.duration / this.state.secondsPerPixel : 0)
@@ -32,7 +28,7 @@ export default class Timeline extends PureComponent {
     analyzerNode.connect(audioCtx.destination)
     sourceNode.start()
 
-    const suspendTimes = Array.from({ length: this.ctx.canvas.width }, (value, index) => this.props.audioBuffer.duration / this.ctx.canvas.width * index)
+    const suspendTimes = Array.from({ length: this.ctx.canvas.width }, (value, index) => this.state.secondsPerPixel * index)
     const frequencySlicesByTimePromises = suspendTimes
       .map(async time => {
         await audioCtx.suspend(time)
@@ -43,33 +39,40 @@ export default class Timeline extends PureComponent {
       })
     const rendering = audioCtx.startRendering()
     const frequencySlicesByTime = await Promise.all(frequencySlicesByTimePromises)
-
-    //const canvasWidth = this.ctx.canvas.width
-    //const canvasHeight = this.ctx.canvas.height
-    const imageData = this.ctx.getImageData(0, 0, this.ctx.canvas.width, this.ctx.canvas.height)
+    const canvasWidth = this.ctx.canvas.width
+    const canvasHeight = this.ctx.canvas.height
+    const imageData = this.ctx.getImageData(0, 0, canvasWidth, canvasHeight)
 
     const buf = new ArrayBuffer(imageData.data.length)
     const buf8 = new Uint8ClampedArray(buf)
     const data = new Uint32Array(buf)
 
-    for (let y = 0; y < this.ctx.canvas.height; ++y) {
-      for (let x = 0; x < this.ctx.canvas.width; ++x) {
-        const value = frequencySlicesByTime[x][this.ctx.canvas.height - y - 1]
-        data[y * this.ctx.canvas.width + x] =
+    for (let y = 0; y < canvasHeight; ++y) {
+      for (let x = 0; x < canvasWidth; ++x) {
+        const value = frequencySlicesByTime[x][canvasHeight - y - 1]
+        data[y * canvasWidth + x] =
                 (255 << 24) | // alpha
                 (gradient[value][2] << 16) | // blue
                 (gradient[value][1] << 8) | // green
                 gradient[value][0] // red
       }
     }
-
     imageData.data.set(buf8)
     this.ctx.putImageData(imageData, 0, 0)
     await rendering
   }
   render () {
+    const offsetPixels = Math.min(
+      this.ctx ? Math.max(this.props.currentTime / this.state.secondsPerPixel - this.ctx.canvas.parentElement.clientWidth / 2, 0) : 0,
+      this.ctx ? this.props.audioBuffer.duration / this.state.secondsPerPixel - this.ctx.canvas.parentElement.clientWidth : 0
+    )
+    // if (offsetPixels > 0) debugger
     return <div className='timeline'>
-      <canvas ref={canvas => this.ctx = canvas && canvas.getContext('2d')}></canvas>
+      <canvas
+        ref={canvas => this.ctx = canvas && canvas.getContext('2d')}
+        style={{marginLeft: -offsetPixels}}
+      ></canvas>
+      <div className='timelinepointer' style={{left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels}} />
     </div>
   }
 }

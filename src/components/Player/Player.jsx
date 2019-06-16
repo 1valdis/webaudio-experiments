@@ -54,6 +54,17 @@ export default class Player extends PureComponent {
       isPlaying: true,
       startTime: this.audioContext.currentTime - time
     })
+    requestAnimationFrame(() => this.updateCurrentTime())
+  }
+  updateCurrentTime() {
+    this.setState(state => {
+      if (this.state.isPlaying) {
+        return {
+          currentTime: this.audioContext.currentTime - state.startTime
+        }
+      }
+      return {}
+    }, () => requestAnimationFrame(() => this.updateCurrentTime()))
   }
   async pause () {
     this.sourceNode.disconnect()
