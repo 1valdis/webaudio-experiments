@@ -8,10 +8,15 @@ export default class Timeline extends PureComponent {
     this.state = {
       secondsPerPixel: 0.02,
     }
+    this.resize = this.resize.bind(this)
   }
   componentDidMount() {
     if (this.props.audioBuffer)
       this.renderCanvas()
+    window.addEventListener('resize', this.resize)
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
   }
   async renderCanvas() {
     this.ctx.canvas.width = Math.ceil(this.props.audioBuffer ? this.props.audioBuffer.duration / this.state.secondsPerPixel : 0)
@@ -60,6 +65,9 @@ export default class Timeline extends PureComponent {
     imageData.data.set(buf8)
     this.ctx.putImageData(imageData, 0, 0)
     await rendering
+  }
+  resize () {
+    this.forceUpdate()
   }
   render () {
     const offsetPixels = Math.min(

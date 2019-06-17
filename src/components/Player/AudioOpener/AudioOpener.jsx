@@ -14,6 +14,7 @@ export default class Timeline extends PureComponent {
     </div>
   }
   openFile (e) {
+    if (!e.target.files.length) return
     this.setState({ isWorking: true })
     const reader = new window.FileReader()
     reader.onload = async (e) => {
