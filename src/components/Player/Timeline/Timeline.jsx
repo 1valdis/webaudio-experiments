@@ -74,7 +74,7 @@ export default class Timeline extends PureComponent {
         ></canvas>
         <div className='timelinepointer' style={{left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels}} />
       </div>
-      <input type="range" min="0" max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : "0"} value={this.props.currentTime} onInput={this.props.onCurrentTimeChange}/>
+      <input type="range" min="0" max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : "0"} step="0.01" value={this.props.currentTime} onInput={this.props.onCurrentTimeChange}/>
     </div>
   }
 }
