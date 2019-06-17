@@ -20,7 +20,7 @@ export default class Player extends PureComponent {
   }
   render () {
     return <div className='player'>
-      <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={this.setTime} key={this.state.audioBufferKey}/>
+      <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={(e) => this.play(+e.target.value)} key={this.state.audioBufferKey}/>
       <PlayPause isPlaying={this.state.isPlaying} onChange={this.state.isPlaying ? () => this.pause() : () => this.play()} disabled={!this.state.audioBuffer} />
       <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => { this.fileOpened(buffer); this.play() }} />
     </div>

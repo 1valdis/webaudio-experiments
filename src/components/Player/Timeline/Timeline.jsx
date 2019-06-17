@@ -66,13 +66,15 @@ export default class Timeline extends PureComponent {
       this.ctx ? Math.max(this.props.currentTime / this.state.secondsPerPixel - this.ctx.canvas.parentElement.clientWidth / 2, 0) : 0,
       this.ctx ? this.props.audioBuffer.duration / this.state.secondsPerPixel - this.ctx.canvas.parentElement.clientWidth : 0
     )
-    // if (offsetPixels > 0) debugger
     return <div className='timeline'>
-      <canvas
-        ref={canvas => this.ctx = canvas && canvas.getContext('2d')}
-        style={{marginLeft: -offsetPixels}}
-      ></canvas>
-      <div className='timelinepointer' style={{left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels}} />
+      <div className='frequencygraph'>
+        <canvas
+          ref={canvas => this.ctx = canvas && canvas.getContext('2d')}
+          style={{marginLeft: -offsetPixels}}
+        ></canvas>
+        <div className='timelinepointer' style={{left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels}} />
+      </div>
+      <input type="range" min="0" max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : "0"} value={this.props.currentTime} onInput={this.props.onCurrentTimeChange}/>
     </div>
   }
 }
