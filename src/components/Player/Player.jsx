@@ -20,7 +20,7 @@ export default class Player extends PureComponent {
   }
   render () {
     return <div className='player'>
-      <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={(e) => this.currentTimeChanged(+e.target.value)} key={this.state.audioBufferKey}/>
+      <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={(e) => this.currentTimeChanged(+e.target.value)} key={this.state.audioBufferKey} />
       <PlayPause isPlaying={this.state.isPlaying} onChange={this.state.isPlaying ? () => this.pause() : () => this.play()} disabled={!this.state.audioBuffer} />
       <AudioOpener audioContext={this.audioContext} onOpen={(buffer) => { this.fileOpened(buffer); this.play() }} />
     </div>
@@ -51,14 +51,14 @@ export default class Player extends PureComponent {
     this.sourceNode.buffer = this.state.audioBuffer
     this.sourceNode.start(0, time)
     if (!this.state.isPlaying) {
-      requestAnimationFrame(() => this.updateCurrentTime())
+      window.requestAnimationFrame(() => this.updateCurrentTime())
     }
     this.setState({
       isPlaying: true,
       startTime: this.audioContext.currentTime - time
     })
   }
-  updateCurrentTime() {
+  updateCurrentTime () {
     this.setState(state => {
       if (this.state.isPlaying) {
         return {
@@ -66,7 +66,7 @@ export default class Player extends PureComponent {
         }
       }
       return {}
-    }, () => this.state.isPlaying && requestAnimationFrame(() => this.updateCurrentTime()))
+    }, () => this.state.isPlaying && window.requestAnimationFrame(() => this.updateCurrentTime()))
   }
   async pause () {
     this.sourceNode.disconnect()

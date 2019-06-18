@@ -3,22 +3,21 @@ import gradient from '../../gradient.json'
 import './style.css'
 
 export default class Timeline extends PureComponent {
-  constructor(...args) {
+  constructor (...args) {
     super(...args)
     this.state = {
-      secondsPerPixel: 0.02,
+      secondsPerPixel: 0.02
     }
     this.resize = this.resize.bind(this)
   }
-  componentDidMount() {
-    if (this.props.audioBuffer)
-      this.renderCanvas()
+  componentDidMount () {
+    if (this.props.audioBuffer) { this.renderCanvas() }
     window.addEventListener('resize', this.resize)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('resize', this.resize)
   }
-  async renderCanvas() {
+  async renderCanvas () {
     this.ctx.canvas.width = Math.ceil(this.props.audioBuffer ? this.props.audioBuffer.duration / this.state.secondsPerPixel : 0)
     this.ctx.canvas.height = 1024
 
@@ -67,7 +66,9 @@ export default class Timeline extends PureComponent {
     await rendering
   }
   resize () {
-    this.forceUpdate()
+    if (this.props.audioBuffer) {
+      this.forceUpdate()
+    }
   }
   render () {
     const offsetPixels = Math.min(
@@ -77,12 +78,12 @@ export default class Timeline extends PureComponent {
     return <div className='timeline'>
       <div className='frequencygraph'>
         <canvas
-          ref={canvas => this.ctx = canvas && canvas.getContext('2d')}
-          style={{marginLeft: -offsetPixels}}
-        ></canvas>
-        <div className='timelinepointer' style={{left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels}} />
+          ref={canvas => { this.ctx = canvas && canvas.getContext('2d') }}
+          style={{ marginLeft: -offsetPixels }}
+        />
+        <div className='timelinepointer' style={{ left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels }} />
       </div>
-      <input type="range" min="0" max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : "0"} step="0.01" value={this.props.currentTime} onInput={this.props.onCurrentTimeChange}/>
+      <input type='range' min='0' max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : '0'} step='0.01' value={this.props.currentTime} onInput={this.props.onCurrentTimeChange} />
     </div>
   }
 }
