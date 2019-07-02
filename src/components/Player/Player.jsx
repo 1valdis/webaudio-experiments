@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import Timeline from './Timeline/Timeline'
 import PlayPause from './PlayPause/PlayPause'
 import AudioOpener from './AudioOpener/AudioOpener'
+import audioBufferToWave from '../../util/audioBufferToWave'
 
 import './style.css'
 
@@ -26,6 +27,15 @@ export default class Player extends PureComponent {
     </div>
   }
   fileOpened (buffer) {
+    const func = audioBufferToWave
+    let href = window.URL.createObjectURL(func(buffer))
+    let a = document.createElement('a')
+    a.download = true
+    a.href = href
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    debugger
     this.setState((state) => ({
       audioBuffer: buffer,
       audioBufferKey: state.audioBufferKey + 1,
