@@ -7,16 +7,6 @@ import Player from './components/Player/Player'
 // import WorkletWhiteNoise from './components/WorkletWhiteNoise/WhiteNoise'
 
 class App extends Component {
-  constructor (...args) {
-    super(...args)
-    this.audioContext = new AudioContext()
-    this.filter = this.audioContext.createBiquadFilter()
-    this.state = {
-      working: false,
-      audioBuffer: null
-    }
-  }
-
   render () {
     return <div className='App'>
       {/* <input type="file" id="input" accept="audio/*" onChange={this.openFile}/>
@@ -41,32 +31,6 @@ class App extends Component {
       </select>
       <SingleChannelLiveFrequencyGraph audioContext={this.audioContext} fromNode={this.filter} /> */}
     </div>
-  }
-
-  openFile (e) {
-    if (!e.target.files.length) return
-    this.setState({ working: true })
-    const reader = new window.FileReader()
-    reader.onload = async (e) => {
-      const buffer = await this.audioContext.decodeAudioData(e.target.result)
-      this.source = this.audioContext.createBufferSource()
-      this.source.buffer = buffer
-      this.source.connect(this.filter)
-      this.filter.connect(this.audioContext.destination)
-      this.play()
-      this.setState({ working: false })
-    }
-    reader.readAsArrayBuffer(e.target.files[0])
-  }
-
-  async play () {
-    console.log(this.audioContext.state)
-    if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume()
-      console.log('resumed')
-    }
-    this.source.start(0)
-    console.log('started')
   }
 }
 

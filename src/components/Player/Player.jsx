@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import Timeline from './Timeline/Timeline'
 import PlayPause from './PlayPause/PlayPause'
 import AudioOpener from './AudioOpener/AudioOpener'
-import audioBufferToWave from '../../util/audioBufferToWave'
+// import audioBufferToWave from '../../util/audioBufferToWave'
 
 import './style.css'
 
@@ -70,7 +70,7 @@ export default class Player extends PureComponent {
   }
   updateCurrentTime () {
     this.setState(state => {
-      if (this.state.isPlaying) {
+      if (state.isPlaying) {
         return {
           currentTime: this.audioContext.currentTime - state.startTime
         }
