@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { HashRouter, Route, Redirect } from 'react-router-dom'
 import './App.css'
 
 // import FrequencyGraph from './components/FrequencyGraph/FrequencyGraph'
@@ -9,12 +10,19 @@ import Player from './components/Player/Player'
 class App extends Component {
   render () {
     return <div className='App'>
+      <HashRouter>
+        {/* <ul>
+          <li><NavLink to='/player'>Player</NavLink></li>
+          <li><NavLink to='/kek'>Kektus</NavLink></li>
+        </ul> */}
+        <Route exact path='/' component={() => <Redirect to='/player' />} />
+        <Route exact path='/player' component={() => <Player />} />
+      </HashRouter>
       {/* <input type="file" id="input" accept="audio/*" onChange={this.openFile}/>
       <button onClick={this.play} disabled={this.state.working || !this.source}>Play</button>
       <FrequencyGraph buffer={this.state.audioBuffer}></FrequencyGraph>
-      <WorkletWhiteNoise /> */}
-      <Player />
-      {/* <input type='file' id='input' accept='audio/*' onChange={e => this.openFile(e)} />
+      <WorkletWhiteNoise />
+      <input type='file' id='input' accept='audio/*' onChange={e => this.openFile(e)} />
       <input type='range' id='frequency' onChange={(e) => { this.filter.frequency.value = +e.target.value; this.forceUpdate() }} min='0' max='10000' step='1' value={this.filter.frequency.value} />
       <input type='range' id='detune' onChange={(e) => { this.filter.detune.value = +e.target.value; this.forceUpdate() }} min='0' max='10000' step='1' value={this.filter.detune.value} />
       <input type='range' id='gain' onChange={(e) => { this.filter.gain.value = +e.target.value; this.forceUpdate() }} min='-50' max='50' step='0.1' value={this.filter.gain.value} />
