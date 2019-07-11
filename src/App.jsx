@@ -5,7 +5,7 @@ import './App.css'
 // import FrequencyGraph from './components/FrequencyGraph/FrequencyGraph'
 // import SingleChannelLiveFrequencyGraph from './components/SingleChannelLiveFrequencyGraph/SingleChannelLiveFrequencyGraph'
 import Player from './components/Player/Player'
-// import WorkletWhiteNoise from './components/WorkletWhiteNoise/WhiteNoise'
+import WorkletWhiteNoise from './components/WorkletWhiteNoise/WhiteNoise'
 
 class App extends Component {
   render () {
@@ -17,6 +17,7 @@ class App extends Component {
         </ul> */}
         <Route exact path='/' component={() => <Redirect to='/player' />} />
         <Route exact path='/player' component={() => <Player />} />
+        <Route exact path='/whitenoise' component={() => <WorkletWhiteNoise />} />
       </HashRouter>
       {/* <input type="file" id="input" accept="audio/*" onChange={this.openFile}/>
       <button onClick={this.play} disabled={this.state.working || !this.source}>Play</button>

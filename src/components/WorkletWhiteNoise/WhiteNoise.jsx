@@ -10,6 +10,9 @@ export default class WhiteNoize extends PureComponent {
   componentDidMount () {
     this.init()
   }
+  componentWillUnmount () {
+    this.audioContext.close()
+  }
   async init () {
     this.audioContext = new window.AudioContext()
     await this.audioContext.audioWorklet.addModule('white-noise-processor.js')
@@ -18,7 +21,6 @@ export default class WhiteNoize extends PureComponent {
     this.setState({
       initializing: false
     })
-    console.log(this.whiteNoiseNode.parameters)
   }
   render () {
     return <div>

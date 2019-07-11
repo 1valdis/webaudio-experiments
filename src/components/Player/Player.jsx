@@ -19,6 +19,9 @@ export default class Player extends PureComponent {
     this.audioContext = new window.AudioContext()
     this.sourceNode = null
   }
+  componentWillUnmount () {
+    this.audioContext.close()
+  }
   render () {
     return <div className='player'>
       <Timeline audioBuffer={this.state.audioBuffer} currentTime={this.state.currentTime} onCurrentTimeChange={(e) => this.currentTimeChanged(+e.target.value)} key={this.state.audioBufferKey} />
