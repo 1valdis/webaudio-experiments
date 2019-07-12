@@ -1,11 +1,15 @@
 import React, { PureComponent } from 'react'
+
+import LoadingIndicator from './LoadingIndicator/LoadingIndicator'
+
 import './style.css'
 
 export default class Timeline extends PureComponent {
   constructor (...args) {
     super(...args)
     this.state = {
-      secondsPerPixel: 0.02
+      secondsPerPixel: 0.02,
+      renderingPercentage: 0
     }
     this.resize = this.resize.bind(this)
   }
@@ -22,9 +26,6 @@ export default class Timeline extends PureComponent {
         const arrays = e.data.map(buffer => new Uint8Array(buffer))
         const width = arrays.length
         const height = arrays[0].length
-        //ctx.canvas.width = width
-        //ctx.canvas.height = height
-        //const imageData = ctx.getImageData(0, 0, width, height)
         const imageData = new ImageData(width, height)
 
         const data = new Uint32Array(imageData.data.buffer)
@@ -39,11 +40,8 @@ export default class Timeline extends PureComponent {
                     gradient[value][0] // red
           }
         }
-        //debugger
-        //ctx.putImageData(imageData, 0, 0)
         postMessage({buffer: imageData.data.buffer, width: imageData.width, height: imageData.height}, [imageData.data.buffer])
       }
-      console.log("we're good")
     }
   `
     const blob = new window.Blob([workerCode], { type: 'text/javascript' })
@@ -61,6 +59,14 @@ export default class Timeline extends PureComponent {
     window.removeEventListener('resize', this.resize)
     this.worker.terminate()
     URL.revokeObjectURL(this.workerUrl)
+  }
+  updateRenderingPercentage (audioCtx, audioBuffer) {
+    this.setState({
+      renderingPercentage: Math.floor(audioCtx.currentTime / audioBuffer.duration * 100)
+    })
+    if (audioCtx.currentTime !== this.props.audioBuffer.duration) {
+      window.requestAnimationFrame(() => this.updateRenderingPercentage(audioCtx, audioBuffer))
+    }
   }
   async renderCanvas () {
     const width = Math.ceil(this.props.audioBuffer ? this.props.audioBuffer.duration / this.state.secondsPerPixel : 0)
@@ -85,12 +91,11 @@ export default class Timeline extends PureComponent {
         await audioCtx.resume()
         return frequencyData
       })
-    const rendering = audioCtx.startRendering()
+    this.updateRenderingPercentage(audioCtx, this.props.audioBuffer)
+    await audioCtx.startRendering()
     const frequencySlicesByTime = await Promise.all(frequencySlicesByTimePromises)
     const frequencySlicesByTimeBuffers = frequencySlicesByTime.map(array => array.buffer)
     this.worker.postMessage(frequencySlicesByTimeBuffers, frequencySlicesByTimeBuffers)
-    console.log('message posted')
-    await rendering
   }
   resize () {
     if (this.props.audioBuffer) {
@@ -109,6 +114,7 @@ export default class Timeline extends PureComponent {
           style={{ marginLeft: -offsetPixels }}
         />
         <div className='timelinepointer' style={{ left: this.props.currentTime / this.state.secondsPerPixel - offsetPixels }} />
+        <LoadingIndicator hidden={!this.props.audioBuffer || this.state.renderingPercentage === 100} percentage={this.state.renderingPercentage} />
       </div>
       <input type='range' min='0' max={this.props.audioBuffer ? this.props.audioBuffer.duration.toString() : '0'} step='0.01' value={this.props.currentTime} onInput={this.props.onCurrentTimeChange} onChange={() => {}} />
     </div>
