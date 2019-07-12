@@ -3,9 +3,10 @@ let ctx = null
 let slices = []
 let lastCurrentTime = 0
 let secondsPerPixel = null
+let animating = false
 const renderCanvas = () => {
   if (!ctx) return
-  console.time('render')
+  // console.time('render')
   const width = ctx.canvas.width
   const height = ctx.canvas.height
   const imageData = new ImageData(width, height)
@@ -28,11 +29,11 @@ const renderCanvas = () => {
     }
   }
   ctx.putImageData(imageData, 0, 0)
-  console.timeEnd('render')
+  // console.timeEnd('render')
+  // console.log(lastCurrentTime)
   requestAnimationFrame(renderCanvas)
 }
 this.onmessage = e => {
-  //console.count('kek')
   if (e.data.canvas) {
     ctx = e.data.canvas.getContext('2d')
     secondsPerPixel = e.data.secondsPerPixel
@@ -40,12 +41,12 @@ this.onmessage = e => {
   }
   if (e.data.slices) {
     slices.splice(e.data.start, e.data.end - e.data.start + 1, ...e.data.slices.map(buffer => new Uint8ClampedArray(buffer)))
-    //renderCanvas()
+    if (!animating) {
+      requestAnimationFrame(renderCanvas)
+      animating = true
+    }
   }
   if (e.data.currentTime) {
     lastCurrentTime = e.data.currentTime
-    //renderCanvas()
   }
 }
-
-requestAnimationFrame(renderCanvas)
